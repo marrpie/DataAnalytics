@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"rest.service"})
+@ComponentScan(basePackages = {"rest"})
 public class Main {
 
     public static void main(String[] args){
