@@ -11,23 +11,39 @@ import java.util.List;
 public class Graph {
     private int e; //liczba krawedzi
     private int v; //liczba wierzcholkow
-    private List<Integer>[] connectionList; //lista sasiedztwa
+    private List<Edge> connectionList; //lista sasiedztwa
 
-    public Graph(int v) {
-        this.v = v;
+    public Graph() {
+        v = 0;
         e = 0;
-        connectionList = new List[v];
-        for(int i = 0; i < v; i++){
-            connectionList[i] = new ArrayList<>();
+        connectionList = new ArrayList<>();
+    }
+
+    public void addEdge(TwitterProfile i, TwitterProfile j){
+        if(!isEdge(i, j)){
+            connectionList.add(new Edge(i, j));
+            e++;
+            if(!isVertices(i)) v++;
+            if(!isVertices(j)) v++;
         }
     }
 
-    public void addEdge(int from, int to){
-        if(!connectionList[from].contains(to)) {
-            connectionList[from].add(to);
-            connectionList[to].add(from);
-            e++;
+    public Boolean isVertices(TwitterProfile profile){
+        for(Edge edge:connectionList){
+            if(edge.getFrom().getId() == profile.getId() || edge.getTo().getId() == profile.getId()){
+                return true;
+            }
         }
+        return false;
+    }
+
+    public Boolean isEdge(TwitterProfile i, TwitterProfile j){
+        for(Edge edge:connectionList){
+            if((edge.getFrom().getId() == i.getId() && edge.getTo().getId() == j.getId()) || (edge.getTo().getId() == i.getId() && edge.getFrom().getId() == j.getId())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getNumberOfEdges() {
@@ -38,7 +54,7 @@ public class Graph {
         return v;
     }
 
-    public List<Integer>[] getConnectionList() {
+    public List<Edge> getConnectionList() {
         return connectionList;
     }
 }

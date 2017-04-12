@@ -13,6 +13,7 @@ import rest.service.GraphService;
 import rest.service.TwitterService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -30,11 +31,13 @@ public class TwitterController {
 
     @RequestMapping (value = "/search/user/{hashTag}", produces = "application/json", method = RequestMethod.GET)
     public List<TwitterProfile> getTweetsByHash(@PathVariable String hashTag){
-        List<Tweet> tweets = twitterService.getTweetsByHashTag(hashTag, 20);
-        List<TwitterProfile> users = twitterService.getTwitterProfileByTweets(tweets);
-        graphService.createGraph(users);
-        graphService.toString();
-        return users;
+        List<Tweet> tweets = twitterService.getTweetsByHashTag(hashTag, 15);
+        Set<TwitterProfile> users = twitterService.getTwitterProfileByTweets(tweets);
+
+        //twitterService.getFriendshipBeetwen(users.get(0), users.get(1));
+        //graphService.createGraph(users);
+        //graphService.toString();
+        return null;
     }
 
 }
