@@ -2,6 +2,7 @@ package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.twitter.api.CursoredList;
+import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.TwitterProfile;
 import org.springframework.stereotype.Component;
 import rest.model.Graph;
@@ -18,17 +19,12 @@ public class GraphService {
     @Autowired
     private TwitterService twitterService;
 
-    public void createGraph(List<TwitterProfile> users){
+    public void createGraph(List<Tweet> tweets){
         graph = new Graph();
-        for(TwitterProfile i:users){
-            //List<Long> friendsId = twitterService.getTwitterFriendsIdByTwitterProfile(i);
-            for(TwitterProfile j:users){
-                if(i.getId() == j.getId()){
-                    continue;
-                }
-
-                if(twitterService.hasConnection(twitterService.getFriendshipBeetwen(i, j))){
-                    graph.addEdge(i, j);
+        for(Tweet i:tweets){
+            for(Tweet j:tweets){
+                if(i.getId() != j.getId()){
+                    graph.addEdge(i,j);
                 }
             }
         }

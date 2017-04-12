@@ -1,32 +1,42 @@
 package rest.model;
 
-import org.springframework.social.twitter.api.TwitterProfile;
+import org.springframework.social.twitter.api.Tweet;
 
 /**
  * Created by Marr on 2017-04-04.
  */
 public class Edge {
-    private TwitterProfile from;
-    private TwitterProfile to;
+    private Tweet from;
+    private Tweet to;
+    private int weight;
 
-    public Edge(TwitterProfile from, TwitterProfile to) {
+    public Edge(Tweet from, Tweet to, int weight) {
         this.from = from;
         this.to = to;
+        this.weight = weight;
     }
 
-    public TwitterProfile getFrom() {
+    public Tweet getFrom() {
         return this.from;
     }
 
-    public void setFrom(TwitterProfile from) {
+    public void setFrom(Tweet from) {
         this.from = from;
     }
 
-    public TwitterProfile getTo() {
+    public Tweet getTo() {
         return this.to;
     }
 
-    public void setTo(TwitterProfile to) {
+    public void setTo(Tweet to) {
         this.to = to;
+    }
+
+    public int getWeight() {
+        return this.weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }
