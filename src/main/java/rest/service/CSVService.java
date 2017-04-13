@@ -17,8 +17,6 @@ import java.util.List;
 public class CSVService {
     private char SEPARATOR = '|';
 
-
-    //https://tools.ietf.org/html/rfc4180
     private String followCVSformat(String value) {
 
         String result = value;
