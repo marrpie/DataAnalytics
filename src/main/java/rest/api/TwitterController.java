@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rest.model.Graph;
+import rest.service.FileService;
 import rest.service.GraphService;
 import rest.service.TwitterService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,17 +31,28 @@ public class TwitterController {
     private TwitterService twitterService;
     @Autowired
     private GraphService graphService;
+    @Autowired
+    private FileService fileService;
 
-    @RequestMapping (value = "/search/user/{hashTag}", produces = "application/json", method = RequestMethod.GET)
-    public List<TwitterProfile> getTweetsByHash(@PathVariable String hashTag){
-        List<Tweet> tweets = twitterService.getTweetsByHashTag("#" + hashTag, 15);
-        Set<TwitterProfile> users = twitterService.getTwitterProfileByTweets(tweets);
+    @RequestMapping (value = "/search/tweet/{hashTag}/{limit}", produces = "application/json", method = RequestMethod.GET)
+    public String getTweetsByHash(@PathVariable String hashTag, @PathVariable int limit){
+        List<Tweet> tweets = twitterService.getTweetsByHashTag("#" + hashTag, limit);
 
-        //twitterService.getFriendshipBeetwen(users.get(0), users.get(1));
         graphService.createGraph(tweets);
         Graph graph = graphService.getGraph();
-        //graphService.toString();
-        return null;
+
+        String nodeFile = "C:/Projekty/DataAnalytics/nodes.csv";
+        String edgeFile = "C:/Projekty/DataAnalytics/edges.csv";
+
+        try{
+            fileService.generateNodeCSVFile(nodeFile, graph);
+            fileService.generateEdgeCSVFile(edgeFile, graph);
+
+            return "Generete two new files: \n\n " + nodeFile + "\n" + edgeFile;
+        } catch(IOException e){
+            System.out.println("Exception during generation CSV files");
+            return "Exception during generation CSV files";
+        }
     }
 
 }
