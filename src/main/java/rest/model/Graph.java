@@ -19,9 +19,9 @@ public class Graph {
         connectionList = new ArrayList<>();
     }
 
-    public void addEdge(Tweet i, Tweet j){
+    public void addEdge(Tweet i, Tweet j, int weightType){
         if(!isEdge(i, j)){
-            int weight = findWeight(i,j);
+            int weight = findWeight(i,j, weightType);
             if(!isVertices(i)) vertices.add(i);
             if(!isVertices(j)) vertices.add(j);
             connectionList.add(new Edge(i, j, weight));
@@ -46,7 +46,21 @@ public class Graph {
         return false;
     }
 
-    public int findWeight(Tweet i, Tweet j){
+    public int findWeight(Tweet i, Tweet j, int weightType){
+        int weight = 0;
+        switch (weightType){
+            case 1: //po ilosci hashTagow
+                weight = findWeightByHashTag(i, j);
+                break;
+            default:
+                weight = findWeightByHashTag(i, j);
+                break;
+        }
+
+        return weight;
+    }
+
+    public int findWeightByHashTag(Tweet i, Tweet j){
         List<HashTagEntity> firstNodeTags = i.getEntities().getHashTags();
         List<HashTagEntity> secondNodeTags = j.getEntities().getHashTags();
         int weight = 0;

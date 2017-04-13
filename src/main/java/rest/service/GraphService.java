@@ -19,12 +19,12 @@ public class GraphService {
     @Autowired
     private TwitterService twitterService;
 
-    public void createGraph(List<Tweet> tweets){
+    public void createGraph(List<Tweet> tweets, int weightType){
         graph = new Graph();
         for(Tweet i:tweets){
             for(Tweet j:tweets){
                 if(i.getId() != j.getId()){
-                    graph.addEdge(i,j);
+                    graph.addEdge(i,j, weightType);
                 }
             }
         }

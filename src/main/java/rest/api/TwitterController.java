@@ -38,7 +38,7 @@ public class TwitterController {
     public String getTweetsByHash(@PathVariable String hashTag, @PathVariable int limit){
         List<Tweet> tweets = twitterService.getTweetsByHashTag("#" + hashTag, limit);
 
-        graphService.createGraph(tweets);
+        graphService.createGraph(tweets, 1);
         Graph graph = graphService.getGraph();
 
         String nodeFile = "C:/Projekty/DataAnalytics/nodes.csv";
