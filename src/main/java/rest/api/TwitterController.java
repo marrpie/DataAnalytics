@@ -38,11 +38,12 @@ public class TwitterController {
     public String getTweetsByHash(@PathVariable String hashTag, @PathVariable int limit){
         List<Tweet> tweets = twitterService.getTweetsByHashTag("#" + hashTag, limit);
 
-        graphService.createGraph(tweets, 1);
+        graphService.createGraph(tweets, 1, hashTag);
         Graph graph = graphService.getGraph();
 
-        String nodeFile = "C:/Projekty/DataAnalytics/nodes.csv";
-        String edgeFile = "C:/Projekty/DataAnalytics/edges.csv";
+        String path = System.getProperty("user.dir");
+        String nodeFile = path + "/nodes.csv";
+        String edgeFile = path + "/edges.csv";
 
         try{
             fileService.generateNodeCSVFile(nodeFile, graph);
