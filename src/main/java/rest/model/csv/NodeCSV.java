@@ -12,6 +12,7 @@ import java.util.List;
 public class NodeCSV {
     private long id;
     private String text;
+    private double sentiment;
     private long userId;
     private int retweetedCount;
     private String tags;
@@ -20,9 +21,10 @@ public class NodeCSV {
     private int friendsCount;
     private int followersCount;
 
-    public NodeCSV(long id, String text, long userId, int retweetedCount, String tags, int tagsCount, String userName, int friendsCount, int followersCount) {
+    public NodeCSV(long id, String text, double sentiment, long userId, int retweetedCount, String tags, int tagsCount, String userName, int friendsCount, int followersCount) {
         this.id = id;
         this.text = text;
+        this.sentiment = sentiment;
         this.userId = userId;
         this.retweetedCount = retweetedCount;
         this.tags = tags;
@@ -36,6 +38,7 @@ public class NodeCSV {
         List<String> nodeList = new ArrayList<>();
         nodeList.add(String.valueOf(id));
         nodeList.add(text);
+        nodeList.add(String.valueOf(sentiment));
         nodeList.add(String.valueOf(userId));
         nodeList.add(String.valueOf(retweetedCount));
         nodeList.add(tags);
@@ -60,6 +63,14 @@ public class NodeCSV {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public double getSentiment() {
+        return sentiment;
+    }
+
+    public void setSentiment(double sentiment) {
+        this.sentiment = sentiment;
     }
 
     public long getUserId() {

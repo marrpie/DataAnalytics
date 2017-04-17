@@ -30,6 +30,16 @@ public class TwitterService {
         return twitter.searchOperations().search(hashTag, limit).getTweets();
     }
 
+    public long findTweetIdInListByText(String text, List<Tweet> tweets){
+        for(Tweet tweet:tweets){
+            if(tweet.getText().toLowerCase().equals(text.toLowerCase())){
+                return tweet.getId();
+            }
+        }
+
+        return -1L;
+    }
+
     public Set<TwitterProfile> getTwitterProfileByTweets(List<Tweet> tweets){
         return tweets.stream().map(tweet -> tweet.getUser()).collect(Collectors.toSet());
     }
