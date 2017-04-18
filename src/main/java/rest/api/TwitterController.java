@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rest.model.Graph;
+import rest.model.database.TweetDB;
 import rest.service.FileService;
 import rest.service.GraphService;
+import rest.service.TweetDBService;
 import rest.service.TwitterService;
 
 import java.io.IOException;
@@ -33,16 +35,19 @@ public class TwitterController {
     private GraphService graphService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private TweetDBService tweetDBService;
 
     @RequestMapping (value = "/search/tweet/{hashTag}/{limit}", produces = "application/json", method = RequestMethod.GET)
     public String getTweetsByHash(@PathVariable String hashTag, @PathVariable int limit){
-        List<Tweet> tweets = twitterService.getTweetsByHashTag("#" + hashTag, limit);
+        List<Tweet> tweets = twitterService.clearTheSameByText(twitterService.getTweetsByHashTag("#" + hashTag, limit));
 
-        graphService.createGraph(tweets, 1);
+        graphService.createGraph(tweets, 1, hashTag);
         Graph graph = graphService.getGraph();
 
-        String nodeFile = "C:/Projekty/DataAnalytics/nodes.csv";
-        String edgeFile = "C:/Projekty/DataAnalytics/edges.csv";
+        String path = System.getProperty("user.dir");
+        String nodeFile = path + "/nodes.csv";
+        String edgeFile = path + "/edges.csv";
 
         try{
             fileService.generateNodeCSVFile(nodeFile, graph);

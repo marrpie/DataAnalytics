@@ -8,6 +8,7 @@ import rest.model.Edge;
 import rest.model.Graph;
 import rest.model.csv.EdgeCSV;
 import rest.model.csv.NodeCSV;
+import rest.model.sentiment.SentimentObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +24,12 @@ public class FileService {
 
     @Autowired
     CSVService csvService;
+    @Autowired
+    SentimentService sentimentService;
+
+    public void saveTweetToFile(String name, List<Tweet> tweets){
+
+    }
 
     public void generateEdgeCSVFile(String name, Graph graph) throws IOException{
         List<Edge> edges = graph.getConnectionList();
@@ -41,9 +48,12 @@ public class FileService {
         List<Tweet> nodes = graph.getVertices();
         List<NodeCSV> nodesCSV = new ArrayList<>();
 
+        List<SentimentObject> sentimentNodes = sentimentService.getSentimentByTexts(nodes);
+
         for(Tweet tweet:nodes){
             nodesCSV.add(new NodeCSV(tweet.getId(),
                                     tweet.getText(),
+                                    0.25,//sentimentService.getSentimentByIdFromList(tweet.getId(), sentimentNodes),
                                     tweet.getUser().getId(),
                                     tweet.getRetweetCount(),
                                     tweet.getEntities().getHashTags().stream().map(tag -> "#" + tag.getText()).collect(Collectors.toList()).toString(),

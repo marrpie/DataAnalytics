@@ -104,7 +104,7 @@ public class CSVService {
     public void generateEdgeFile(String file, List<EdgeCSV> edges) throws IOException{
         FileWriter writer = new FileWriter(file);
 
-        writeNodeHeaders(writer);
+        writeEdgeHeaders(writer);
 
         for(EdgeCSV edge:edges){
             writeLine(writer, edge.getAsList());

@@ -2,6 +2,7 @@ package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.RateLimitExceededException;
+import org.springframework.social.twitter.api.SearchParameters;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.TwitterProfile;
@@ -27,7 +28,32 @@ public class TwitterService {
     private Twitter twitter;
 
     public List<Tweet> getTweetsByHashTag(String hashTag, int limit){
-        return twitter.searchOperations().search(hashTag, limit).getTweets();
+        SearchParameters searchParameters = new SearchParameters(hashTag);
+        searchParameters.lang("en");
+        searchParameters.count(limit);
+        return twitter.searchOperations().search(searchParameters).getTweets();
+    }
+
+    public long findTweetIdInListByText(String text, List<Tweet> tweets){
+        for(Tweet tweet:tweets){
+            if(tweet.getText().toLowerCase().equals(text.toLowerCase())){
+                return tweet.getId();
+            }
+        }
+
+        return -1L;
+    }
+
+    public List<Tweet> clearTheSameByText(List<Tweet> tweets){
+        for(int i=0; i<tweets.size(); i++){
+            for(int j=0; j<tweets.size(); j++){
+                if(tweets.get(i).getText().toLowerCase().equals(tweets.get(j).getText().toLowerCase()) && tweets.get(i).getId() != tweets.get(j).getId()){
+                    tweets.remove(j);
+                }
+            }
+        }
+
+        return tweets;
     }
 
     public Set<TwitterProfile> getTwitterProfileByTweets(List<Tweet> tweets){
