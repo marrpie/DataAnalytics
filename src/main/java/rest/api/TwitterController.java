@@ -47,7 +47,7 @@ public class TwitterController {
         List<Tweet> tweets = twitterService.clearTheSameByText(twitterService.getTweetsByHashTag("#" + hashTag, limit, date));
 
         graphService.initGraph();
-        Graph graph = graphService.createGraphWithMinNodes(tweets, 1, hashTag, 150, date);
+        Graph graph = graphService.createGraphWithMinNodes(tweets, 1, hashTag, 5, date);
 
         String path = System.getProperty("user.dir");
         String nodeFile = path + "/nodes.csv";
@@ -57,7 +57,7 @@ public class TwitterController {
             fileService.generateNodeCSVFile(nodeFile, graph);
             fileService.generateEdgeCSVFile(edgeFile, graph);
 
-            tweetDBService.addTweetsToDB(graph.getVertices(), hashTag, sentimentService.getSentimentObjects());
+            //tweetDBService.addTweetsToDB(graph.getVertices(), hashTag, sentimentService.getSentimentObjects());
 
             return "Generete two new files: \n\n " + nodeFile + "\n" + edgeFile;
         } catch(IOException e){

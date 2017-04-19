@@ -48,13 +48,13 @@ public class FileService {
 
         for(Tweet tweet:nodes){
             nodesCSV.add(new NodeCSV(tweet.getId(),
-                                    tweet.getText().replaceAll(";", ":"),
+                                    tweet.getText(),
                                     sentimentService.getSentimentByIdFromList(tweet.getId(), sentimentNodes),
                                     tweet.getUser().getId(),
                                     tweet.getRetweetCount(),
-                                    tweet.getEntities().getHashTags().stream().map(tag -> "#" + tag.getText()).collect(Collectors.toList()).toString().replaceAll(";", ":"),
+                                    tweet.getEntities().getHashTags().stream().map(tag -> "#" + tag.getText()).collect(Collectors.toList()).toString(),
                                     tweet.getEntities().getHashTags().size(),
-                                    tweet.getUser().getName().replaceAll(";", ":"),
+                                    tweet.getUser().getName(),
                                     tweet.getUser().getFriendsCount(),
                                     tweet.getUser().getFollowersCount()));
         }

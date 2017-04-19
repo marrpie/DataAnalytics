@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Component
 public class CSVService {
-    private char SEPARATOR = '|';
+    private char SEPARATOR = ';';
 
     private String followCVSformat(String value) {
 
@@ -25,6 +25,9 @@ public class CSVService {
         }
         if(result.contains("\n")){
             result = result.replaceAll("\\n", " ");
+        }
+        if(result.contains(";")){
+            result = result.replaceAll(";", ":");
         }
         return result;
 
@@ -53,9 +56,9 @@ public class CSVService {
         StringBuilder sb = new StringBuilder();
 
         sb.append("from");
-        sb.append("|");
+        sb.append(";");
         sb.append("to");
-        sb.append("|");
+        sb.append(";");
         sb.append("weight");
 
         sb.append("\n");
@@ -66,23 +69,23 @@ public class CSVService {
         StringBuilder sb = new StringBuilder();
 
         sb.append("id");
-        sb.append("|");
+        sb.append(";");
         sb.append("text");
-        sb.append("|");
+        sb.append(";");
         sb.append("sentiment");
-        sb.append("|");
+        sb.append(";");
         sb.append("userId");
-        sb.append("|");
+        sb.append(";");
         sb.append("retweetedCount");
-        sb.append("|");
+        sb.append(";");
         sb.append("tags");
-        sb.append("|");
+        sb.append(";");
         sb.append("tagsCount");
-        sb.append("|");
+        sb.append(";");
         sb.append("userName");
-        sb.append("|");
+        sb.append(";");
         sb.append("friendsCount");
-        sb.append("|");
+        sb.append(";");
         sb.append("followersCount");
 
         sb.append("\n");
