@@ -69,6 +69,8 @@ public class CSVService {
         sb.append("|");
         sb.append("text");
         sb.append("|");
+        sb.append("sentiment");
+        sb.append("|");
         sb.append("userId");
         sb.append("|");
         sb.append("retweetedCount");

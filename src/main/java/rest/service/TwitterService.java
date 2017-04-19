@@ -12,9 +12,7 @@ import rest.model.dto.RelationshipDTO;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,10 +25,11 @@ public class TwitterService {
     @Autowired
     private Twitter twitter;
 
-    public List<Tweet> getTweetsByHashTag(String hashTag, int limit){
+    public List<Tweet> getTweetsByHashTag(String hashTag, int limit, Date date){
         SearchParameters searchParameters = new SearchParameters(hashTag);
         searchParameters.lang("en");
         searchParameters.count(limit);
+        searchParameters.until(date);
         return twitter.searchOperations().search(searchParameters).getTweets();
     }
 
@@ -45,10 +44,20 @@ public class TwitterService {
     }
 
     public List<Tweet> clearTheSameByText(List<Tweet> tweets){
+        Set<Long> idsToRemove = new HashSet<>();
         for(int i=0; i<tweets.size(); i++){
             for(int j=0; j<tweets.size(); j++){
                 if(tweets.get(i).getText().toLowerCase().equals(tweets.get(j).getText().toLowerCase()) && tweets.get(i).getId() != tweets.get(j).getId()){
-                    tweets.remove(j);
+                    idsToRemove.add(tweets.get(j).getId());
+                }
+            }
+        }
+
+        if(idsToRemove.size() > 0){
+            for(Long id:idsToRemove){
+                if(tweets.stream().filter(t -> t.getId() == id).findFirst().isPresent()){
+                    Tweet tweet = tweets.stream().filter(t -> t.getId() == id).findFirst().get();
+                    tweets.remove(tweet);
                 }
             }
         }

@@ -22,6 +22,8 @@ public class SentimentService {
     @Autowired
     TwitterService twitterService;
 
+    private List<SentimentObject> sentimentObjects;
+
     public double getSentimentByIdFromList(long id, List<SentimentObject> objects){
         for(SentimentObject object:objects){
             if(object.getId() == id){
@@ -32,8 +34,16 @@ public class SentimentService {
         return -2; //error
     }
 
+    public List<SentimentObject> getSentimentObjects() {
+        return sentimentObjects;
+    }
+
+    public void setSentimentObjects(List<SentimentObject> sentimentObjects) {
+        this.sentimentObjects = sentimentObjects;
+    }
+
     public List<SentimentObject> getSentimentByTexts(List<Tweet> nodes){
-        List<SentimentObject> sentimentObjects = new ArrayList<>();
+        sentimentObjects = new ArrayList<>();
 
         JSONArray array = generateNodesInJSON(nodes);
 

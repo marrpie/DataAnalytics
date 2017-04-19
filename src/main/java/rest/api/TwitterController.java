@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rest.model.Graph;
 import rest.model.database.TweetDB;
-import rest.service.FileService;
-import rest.service.GraphService;
-import rest.service.TweetDBService;
-import rest.service.TwitterService;
+import rest.service.*;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,13 +35,19 @@ public class TwitterController {
     private FileService fileService;
     @Autowired
     private TweetDBService tweetDBService;
+    @Autowired
+    private SentimentService sentimentService;
+
+    private long SEVEN_DAYS = 604800000;
 
     @RequestMapping (value = "/search/tweet/{hashTag}/{limit}", produces = "application/json", method = RequestMethod.GET)
     public String getTweetsByHash(@PathVariable String hashTag, @PathVariable int limit){
-        List<Tweet> tweets = twitterService.clearTheSameByText(twitterService.getTweetsByHashTag("#" + hashTag, limit));
+        Date date = new Date();
+        date = new Date(date.getTime()-SEVEN_DAYS);
+        List<Tweet> tweets = twitterService.clearTheSameByText(twitterService.getTweetsByHashTag("#" + hashTag, limit, date));
 
-        graphService.createGraph(tweets, 1, hashTag);
-        Graph graph = graphService.getGraph();
+        graphService.initGraph();
+        Graph graph = graphService.createGraphWithMinNodes(tweets, 1, hashTag, 150, date);
 
         String path = System.getProperty("user.dir");
         String nodeFile = path + "/nodes.csv";
@@ -52,6 +56,8 @@ public class TwitterController {
         try{
             fileService.generateNodeCSVFile(nodeFile, graph);
             fileService.generateEdgeCSVFile(edgeFile, graph);
+
+            tweetDBService.addTweetsToDB(graph.getVertices(), hashTag, sentimentService.getSentimentObjects());
 
             return "Generete two new files: \n\n " + nodeFile + "\n" + edgeFile;
         } catch(IOException e){

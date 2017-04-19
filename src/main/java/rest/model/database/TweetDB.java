@@ -34,8 +34,12 @@ public class TweetDB {
     private String languageCode;
     @Column
     private String source;
+    @Column
+    private String tag;
+    @Column
+    private double sentiment;
 
-    public TweetDB(long tweetId, String text, Date createdAt, String fromUser, String profileImageUrl, long toUserId, long fromUserId, String languageCode, String source) {
+    public TweetDB(long tweetId, String text, Date createdAt, String fromUser, String profileImageUrl, long toUserId, long fromUserId, String languageCode, String source, String tag, double sentiment) {
         this.tweetId = tweetId;
         this.text = text;
         this.createdAt = createdAt;
@@ -45,6 +49,8 @@ public class TweetDB {
         this.fromUserId = fromUserId;
         this.languageCode = languageCode;
         this.source = source;
+        this.tag = tag;
+        this.sentiment = sentiment;
     }
 
     public long getId() {
@@ -125,5 +131,21 @@ public class TweetDB {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public double getSentiment() {
+        return sentiment;
+    }
+
+    public void setSentiment(double sentiment) {
+        this.sentiment = sentiment;
     }
 }

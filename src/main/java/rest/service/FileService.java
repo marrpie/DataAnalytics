@@ -27,10 +27,6 @@ public class FileService {
     @Autowired
     SentimentService sentimentService;
 
-    public void saveTweetToFile(String name, List<Tweet> tweets){
-
-    }
-
     public void generateEdgeCSVFile(String name, Graph graph) throws IOException{
         List<Edge> edges = graph.getConnectionList();
         List<EdgeCSV> edgesCSV = new ArrayList<>();
@@ -52,13 +48,13 @@ public class FileService {
 
         for(Tweet tweet:nodes){
             nodesCSV.add(new NodeCSV(tweet.getId(),
-                                    tweet.getText(),
-                                    0.25,//sentimentService.getSentimentByIdFromList(tweet.getId(), sentimentNodes),
+                                    tweet.getText().replaceAll(";", ":"),
+                                    sentimentService.getSentimentByIdFromList(tweet.getId(), sentimentNodes),
                                     tweet.getUser().getId(),
                                     tweet.getRetweetCount(),
-                                    tweet.getEntities().getHashTags().stream().map(tag -> "#" + tag.getText()).collect(Collectors.toList()).toString(),
+                                    tweet.getEntities().getHashTags().stream().map(tag -> "#" + tag.getText()).collect(Collectors.toList()).toString().replaceAll(";", ":"),
                                     tweet.getEntities().getHashTags().size(),
-                                    tweet.getUser().getName(),
+                                    tweet.getUser().getName().replaceAll(";", ":"),
                                     tweet.getUser().getFriendsCount(),
                                     tweet.getUser().getFollowersCount()));
         }
