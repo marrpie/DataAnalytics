@@ -2,6 +2,7 @@ package rest.service;
 
 import org.springframework.stereotype.Component;
 import rest.model.csv.EdgeCSV;
+import rest.model.csv.HashEdgeCSV;
 import rest.model.csv.NodeCSV;
 
 import java.io.FileWriter;
@@ -67,6 +68,37 @@ public class CSVService {
         w.append(sb.toString());
     }
 
+    public void writeHashEdgeHeaders(Writer w) throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Source");
+        sb.append(";");
+        sb.append("Target");
+        sb.append(";");
+        sb.append("Type");
+        sb.append(";");
+        sb.append("Text");
+        sb.append(";");
+        sb.append("Sentiment");
+        sb.append(";");
+        sb.append("RetweetCount");
+        sb.append(";");
+        sb.append("FavouriteCount");
+        sb.append(";");
+        sb.append("UserName");
+        sb.append(";");
+        sb.append("UserLocation");
+        sb.append(";");
+        sb.append("UserLang");
+        sb.append(";");
+        sb.append("UserFollowers");
+        sb.append(";");
+        sb.append("UserFriends");
+
+        sb.append("\n");
+        w.append(sb.toString());
+    }
+
     private void writeNodeHeaders(Writer w) throws IOException {
         StringBuilder sb = new StringBuilder();
 
@@ -114,6 +146,20 @@ public class CSVService {
         writeEdgeHeaders(writer);
 
         for(EdgeCSV edge:edges){
+            writeLine(writer, edge.getAsList());
+        }
+
+        writer.flush();
+        writer.close();
+
+    }
+
+    public void generateHashEdgeFile(String file, List<HashEdgeCSV> edges) throws IOException{
+        FileWriter writer = new FileWriter(file);
+
+        writeHashEdgeHeaders(writer);
+
+        for(HashEdgeCSV edge:edges){
             writeLine(writer, edge.getAsList());
         }
 

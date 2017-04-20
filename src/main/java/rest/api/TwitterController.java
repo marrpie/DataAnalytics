@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rest.model.Graph;
+import rest.model.HashGraph;
 import rest.model.database.TweetDB;
 import rest.service.*;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +36,8 @@ public class TwitterController {
     private TweetDBService tweetDBService;
     @Autowired
     private SentimentService sentimentService;
+    @Autowired
+    private HashGraphService hashGraphService;
 
     private long SEVEN_DAYS = 604800000;
 
@@ -60,6 +61,41 @@ public class TwitterController {
             //tweetDBService.addTweetsToDB(graph.getVertices(), hashTag, sentimentService.getSentimentObjects());
 
             return "Generete two new files: \n\n " + nodeFile + "\n" + edgeFile;
+        } catch(IOException e){
+            System.out.println("Exception during generation CSV files");
+            return "Exception during generation CSV files";
+        }
+    }
+
+    @RequestMapping (value = "/search/tweet/music", produces = "application/json", method = RequestMethod.GET)
+    public String getTweetsByHash(){
+        List<String> tags = new ArrayList<>();
+        tags.add("#pop");
+        tags.add("#reagge");
+        tags.add("#rap");
+        tags.add("#hip-hop");
+        tags.add("#rock");
+        tags.add("#blues");
+        tags.add("#metal");
+        tags.add("#indierock");
+        tags.add("#house");
+        tags.add("#country");
+        tags.add("#folk");
+        tags.add("#punk");
+        tags.add("#metal");
+
+
+        HashGraph graph = hashGraphService.createHashGraph(tags);
+
+        String path = System.getProperty("user.dir");
+        String edgeFile = path + "/music_edges.csv";
+
+        try{
+            fileService.generateHashEdgeCSVFile(edgeFile, graph);
+
+            //tweetDBService.addTweetsToDB(graph.getVertices(), hashTag, sentimentService.getSentimentObjects());
+
+            return "Generete new file: \n" + edgeFile;
         } catch(IOException e){
             System.out.println("Exception during generation CSV files");
             return "Exception during generation CSV files";

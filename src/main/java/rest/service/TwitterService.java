@@ -2,10 +2,7 @@ package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.RateLimitExceededException;
-import org.springframework.social.twitter.api.SearchParameters;
-import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.Twitter;
-import org.springframework.social.twitter.api.TwitterProfile;
+import org.springframework.social.twitter.api.*;
 import org.springframework.stereotype.Component;
 import rest.model.dto.FriendshipDTO;
 import rest.model.dto.RelationshipDTO;
@@ -31,6 +28,42 @@ public class TwitterService {
         searchParameters.count(limit);
         searchParameters.until(date);
         return twitter.searchOperations().search(searchParameters).getTweets();
+    }
+
+    public List<Tweet> getTweetsByHashTag(String hashTag, int limit){
+        SearchParameters searchParameters = new SearchParameters(hashTag);
+        searchParameters.lang("en");
+        searchParameters.count(limit);
+        return twitter.searchOperations().search(searchParameters).getTweets();
+    }
+
+    public List<Tweet> clearByMinTags(List<Tweet> tweets, int min){
+        List<Tweet> result = clearTheSameByText(tweets);
+
+        result.stream().filter(tweet -> tweet.getEntities().getHashTags().size() > min).collect(Collectors.toList());
+
+        return result;
+    }
+
+    public Set<HashTagEntity> getHashForTweets(List<Tweet> tweets){
+        Set<HashTagEntity> hashTags = new HashSet<>();
+        for(Tweet tweet:tweets){
+            for(HashTagEntity hash:tweet.getEntities().getHashTags()){
+                hashTags.add(hash);
+            }
+        }
+        return hashTags;
+    }
+
+    public List<Tweet> findTweetsByTagsWithMinHashTags(List<String> tags, int min){
+        List<Tweet> tweets = new ArrayList<>();
+
+        for(String tag:tags){
+            List<Tweet> tweetsForTag = clearByMinTags(getTweetsByHashTag(tag, 100), min);
+            tweets.addAll(tweetsForTag);
+        }
+
+        return tweets;
     }
 
     public long findTweetIdInListByText(String text, List<Tweet> tweets){

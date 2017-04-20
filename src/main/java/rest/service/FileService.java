@@ -6,7 +6,10 @@ import org.springframework.social.twitter.api.TwitterProfile;
 import org.springframework.stereotype.Component;
 import rest.model.Edge;
 import rest.model.Graph;
+import rest.model.HashEdge;
+import rest.model.HashGraph;
 import rest.model.csv.EdgeCSV;
+import rest.model.csv.HashEdgeCSV;
 import rest.model.csv.NodeCSV;
 import rest.model.sentiment.SentimentObject;
 
@@ -61,6 +64,35 @@ public class FileService {
         }
 
         csvService.generateNodeFile(name, nodesCSV);
+    }
+
+    public void generateHashEdgeCSVFile(String name, HashGraph graph) throws IOException{
+        List<HashEdge> edges = graph.getConnectionList();
+        List<HashEdgeCSV> edgesCSV = new ArrayList<>();
+
+        List<Tweet> tweets = new ArrayList<>(edges.stream().map(HashEdge::getTweet).collect(Collectors.toSet()));
+        List<SentimentObject> sentimentNodes = sentimentService.getSentimentByTexts(tweets);
+
+        for(HashEdge edge:edges){
+            edgesCSV.add(
+                    new HashEdgeCSV(
+                            edge.getSource(),
+                            edge.getTarget(),
+                            "Undirected",
+                            edge.getTweet().getText(),
+                            sentimentService.getSentimentByIdFromList(edge.getTweet().getId(), sentimentNodes),
+                            edge.getTweet().getRetweetCount(),
+                            edge.getTweet().getFavoriteCount(),
+                            edge.getTweet().getUser().getName(),
+                            edge.getTweet().getUser().getLocation(),
+                            edge.getTweet().getUser().getLanguage(),
+                            edge.getTweet().getUser().getFollowersCount(),
+                            edge.getTweet().getUser().getFriendsCount()
+                    )
+            );
+        }
+
+        csvService.generateHashEdgeFile(name,edgesCSV);
     }
 
 }
