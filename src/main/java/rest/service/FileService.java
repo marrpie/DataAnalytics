@@ -34,6 +34,7 @@ public class FileService {
         for(Edge edge:edges){
             edgesCSV.add(new EdgeCSV(edge.getFrom().getId(),
                                     edge.getTo().getId(),
+                                    "Undirected",
                                     edge.getWeight()));
         }
 

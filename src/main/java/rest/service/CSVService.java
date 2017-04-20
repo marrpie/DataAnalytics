@@ -55,11 +55,13 @@ public class CSVService {
     private void writeEdgeHeaders(Writer w) throws IOException {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("from");
+        sb.append("Source");
         sb.append(";");
-        sb.append("to");
+        sb.append("Target");
         sb.append(";");
-        sb.append("weight");
+        sb.append("Type");
+        sb.append(";");
+        sb.append("Weight");
 
         sb.append("\n");
         w.append(sb.toString());

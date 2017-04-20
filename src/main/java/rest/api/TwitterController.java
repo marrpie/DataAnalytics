@@ -47,7 +47,7 @@ public class TwitterController {
         List<Tweet> tweets = twitterService.clearTheSameByText(twitterService.getTweetsByHashTag("#" + hashTag, limit, date));
 
         graphService.initGraph();
-        Graph graph = graphService.createGraphWithMinNodes(tweets, 1, hashTag, 5, date);
+        Graph graph = graphService.createGraphWithMinNodes(tweets, 1, hashTag, 150, date);
 
         String path = System.getProperty("user.dir");
         String nodeFile = path + "/nodes.csv";
