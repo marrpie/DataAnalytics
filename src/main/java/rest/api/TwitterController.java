@@ -73,23 +73,20 @@ public class TwitterController {
         tags.add("#pop");
         tags.add("#reagge");
         tags.add("#rap");
-        tags.add("#hip-hop");
         tags.add("#rock");
         tags.add("#blues");
         tags.add("#metal");
         tags.add("#indierock");
-        tags.add("#house");
-        tags.add("#country");
+        tags.add("#hip-hop");
         tags.add("#folk");
-        tags.add("#punk");
-        tags.add("#metal");
+        tags.add("#jazz");
 
 
         HashGraph graph = hashGraphService.createHashGraph(tags);
 
         String path = System.getProperty("user.dir");
-        String edgeFile = path + "/music_edges.csv";
-
+        String edgeFile = path + "/music_edges_wlkb.csv";
+        //return edgeFile;
         try{
             fileService.generateHashEdgeCSVFile(edgeFile, graph);
 

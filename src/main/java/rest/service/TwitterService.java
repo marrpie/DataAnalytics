@@ -33,6 +33,7 @@ public class TwitterService {
     public List<Tweet> getTweetsByHashTag(String hashTag, int limit){
         SearchParameters searchParameters = new SearchParameters(hashTag);
         searchParameters.lang("en");
+        searchParameters.geoCode(new GeoCode(54.292, -4.599, 400, GeoCode.Unit.KILOMETER));
         searchParameters.count(limit);
         return twitter.searchOperations().search(searchParameters).getTweets();
     }
@@ -59,7 +60,7 @@ public class TwitterService {
         List<Tweet> tweets = new ArrayList<>();
 
         for(String tag:tags){
-            List<Tweet> tweetsForTag = clearByMinTags(getTweetsByHashTag(tag, 100), min);
+            List<Tweet> tweetsForTag = clearByMinTags(getTweetsByHashTag(tag, 50), min);
             tweets.addAll(tweetsForTag);
         }
 
