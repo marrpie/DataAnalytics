@@ -35,7 +35,18 @@ public class TwitterService {
         searchParameters.lang("en");
         searchParameters.geoCode(new GeoCode(54.292, -4.599, 400, GeoCode.Unit.KILOMETER));
         searchParameters.count(limit);
-        return twitter.searchOperations().search(searchParameters).getTweets();
+        List<Tweet> tweets = twitter.searchOperations().search(searchParameters).getTweets();
+        return setHashTagsToLowerCase(tweets);
+    }
+
+    public List<Tweet> setHashTagsToLowerCase(List<Tweet> tweets){
+        for(Tweet tweet:tweets){
+            Entities oldEntities = tweet.getEntities();
+            List<HashTagEntity> oldHashTags = oldEntities.getHashTags();
+            List<HashTagEntity> newHashTags = oldHashTags.stream().map(tag -> new HashTagEntity(tag.getText().toLowerCase(), tag.getIndices())).collect(Collectors.toList());
+            tweet.setEntities(new Entities(oldEntities.getUrls(), newHashTags, oldEntities.getMentions(), oldEntities.getMedia(), oldEntities.getTickerSymbols()));
+        }
+        return tweets;
     }
 
     public List<Tweet> clearByMinTags(List<Tweet> tweets, int min){
@@ -46,11 +57,11 @@ public class TwitterService {
         return result;
     }
 
-    public Set<HashTagEntity> getHashForTweets(List<Tweet> tweets){
-        Set<HashTagEntity> hashTags = new HashSet<>();
+    public Set<String> getHashForTweets(List<Tweet> tweets){
+        Set<String> hashTags = new HashSet<>();
         for(Tweet tweet:tweets){
             for(HashTagEntity hash:tweet.getEntities().getHashTags()){
-                hashTags.add(hash);
+                hashTags.add(hash.getText());
             }
         }
         return hashTags;
