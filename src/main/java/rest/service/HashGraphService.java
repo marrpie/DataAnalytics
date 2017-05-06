@@ -1,6 +1,7 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.twitter.api.Entities;
 import org.springframework.social.twitter.api.GeoCode;
 import org.springframework.social.twitter.api.HashTagEntity;
 import org.springframework.social.twitter.api.Tweet;
@@ -28,10 +29,10 @@ public class HashGraphService {
     public HashGraph createHashGraph(List<String> tags, GeoCode geoCode){
         hashGraph = new HashGraph();
         List<Tweet> tweets = twitterService.findTweetsByTagsWithMinHashTags(tags, 2, geoCode);
-        Set<HashTagEntity> hashTags = twitterService.getHashForTweets(tweets);
+        Set<String> hashTags = twitterService.getHashForTweets(tweets);
 
-        for(HashTagEntity firstHash:hashTags){
-            List<Tweet> tweetList = tweets.stream().filter(tweet -> tweet.getEntities().getHashTags().contains(firstHash)).collect(Collectors.toList());
+        for(String firstHash:hashTags){
+            List<Tweet> tweetList = tweets.stream().filter(tweet -> hasEntitiesHashTag(tweet.getEntities(),firstHash)).collect(Collectors.toList());
             for(Tweet tweet:tweetList){
                 for(HashTagEntity fHash:tweet.getEntities().getHashTags()){
                     for(HashTagEntity sHash:tweet.getEntities().getHashTags()){
@@ -44,5 +45,14 @@ public class HashGraphService {
         }
 
         return hashGraph;
+    }
+
+    private Boolean hasEntitiesHashTag(Entities entities, String hash){
+        for(HashTagEntity tag:entities.getHashTags()){
+            if(tag.getText().equals(hash)){
+                return true;
+            }
+        }
+        return false;
     }
 }
