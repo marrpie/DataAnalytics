@@ -1,10 +1,7 @@
 package rest.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.twitter.api.CursoredList;
-import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.Twitter;
-import org.springframework.social.twitter.api.TwitterProfile;
+import org.springframework.social.twitter.api.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,11 +30,11 @@ public class TwitterController {
     @Autowired
     private FileService fileService;
     @Autowired
-    private TweetDBService tweetDBService;
-    @Autowired
-    private SentimentService sentimentService;
-    @Autowired
     private HashGraphService hashGraphService;
+    @Autowired
+    private MusicService musicService;
+    @Autowired
+    private GeoService geoService;
 
     private long SEVEN_DAYS = 604800000;
 
@@ -67,25 +64,19 @@ public class TwitterController {
         }
     }
 
-    @RequestMapping (value = "/search/tweet/music", produces = "application/json", method = RequestMethod.GET)
-    public String getTweetsByHash(){
-        List<String> tags = new ArrayList<>();
-        tags.add("#pop");
-        tags.add("#reagge");
-        tags.add("#rap");
-        tags.add("#rock");
-        tags.add("#blues");
-        tags.add("#metal");
-        tags.add("#indierock");
-        tags.add("#hip-hop");
-        tags.add("#folk");
-        tags.add("#jazz");
+    @RequestMapping (value = "/search/tweet/music/{country}", produces = "application/json", method = RequestMethod.GET)
+    public String getTweetsByHash(@PathVariable String country){
+        List<String> tags = musicService.getKindsOfMusic();
 
+        GeoCode geoCode = geoService.getGeoCodeByCountry(country);
+        if(geoCode == null){
+            return "Wrong country! Try usa, australia, rpa, wlkb, canada or nz (new zeland).";
+        }
 
-        HashGraph graph = hashGraphService.createHashGraph(tags);
+        HashGraph graph = hashGraphService.createHashGraph(tags, geoCode);
 
         String path = System.getProperty("user.dir");
-        String edgeFile = path + "/music_edges_wlkb.csv";
+        String edgeFile = path + "/music_edges_" + country + ".csv";
         //return edgeFile;
         try{
             fileService.generateHashEdgeCSVFile(edgeFile, graph);

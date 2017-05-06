@@ -1,6 +1,7 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.twitter.api.GeoCode;
 import org.springframework.social.twitter.api.HashTagEntity;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Component;
@@ -24,9 +25,9 @@ public class HashGraphService {
     @Autowired
     TwitterService twitterService;
 
-    public HashGraph createHashGraph(List<String> tags){
+    public HashGraph createHashGraph(List<String> tags, GeoCode geoCode){
         hashGraph = new HashGraph();
-        List<Tweet> tweets = twitterService.findTweetsByTagsWithMinHashTags(tags, 2);
+        List<Tweet> tweets = twitterService.findTweetsByTagsWithMinHashTags(tags, 2, geoCode);
         Set<HashTagEntity> hashTags = twitterService.getHashForTweets(tweets);
 
         for(HashTagEntity firstHash:hashTags){
