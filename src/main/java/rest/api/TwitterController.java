@@ -12,6 +12,7 @@ import rest.model.database.TweetDB;
 import rest.service.*;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,7 +77,10 @@ public class TwitterController {
         HashGraph graph = hashGraphService.createHashGraph(tags, geoCode);
 
         String path = System.getProperty("user.dir");
-        String edgeFile = path + "/music_edges_" + country + ".csv";
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd_MM_yyyy");
+        String str_date = formatter.format(date);
+        String edgeFile = path.replace("\\", "/") + "/music_edges_" + country + "_" + str_date + ".csv";
         //return edgeFile;
         try{
             fileService.generateHashEdgeCSVFile(edgeFile, graph);
