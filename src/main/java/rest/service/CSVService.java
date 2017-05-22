@@ -1,14 +1,11 @@
 package rest.service;
 
 import org.springframework.stereotype.Component;
-import rest.model.csv.EdgeCSV;
 import rest.model.csv.HashEdgeCSV;
-import rest.model.csv.NodeCSV;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -126,33 +123,6 @@ public class CSVService {
         w.append(sb.toString());
     }
 
-    public void generateNodeFile(String file, List<NodeCSV> nodes) throws IOException{
-        FileWriter writer = new FileWriter(file);
-
-        writeNodeHeaders(writer);
-
-        for(NodeCSV node:nodes){
-            writeLine(writer, node.getAsList());
-        }
-
-        writer.flush();
-        writer.close();
-
-    }
-
-    public void generateEdgeFile(String file, List<EdgeCSV> edges) throws IOException{
-        FileWriter writer = new FileWriter(file);
-
-        writeEdgeHeaders(writer);
-
-        for(EdgeCSV edge:edges){
-            writeLine(writer, edge.getAsList());
-        }
-
-        writer.flush();
-        writer.close();
-
-    }
 
     public void generateHashEdgeFile(String file, List<HashEdgeCSV> edges) throws IOException{
         FileWriter writer = new FileWriter(file);

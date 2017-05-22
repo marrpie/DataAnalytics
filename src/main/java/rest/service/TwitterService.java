@@ -1,14 +1,9 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.RateLimitExceededException;
 import org.springframework.social.twitter.api.*;
 import org.springframework.stereotype.Component;
-import rest.model.dto.FriendshipDTO;
-import rest.model.dto.RelationshipDTO;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,7 +66,7 @@ public class TwitterService {
         List<Tweet> tweets = new ArrayList<>();
 
         for(String tag:tags){
-            List<Tweet> tweetsForTag = clearByMinTags(getTweetsByHashTag(tag, 50, geoCode), min);
+            List<Tweet> tweetsForTag = clearByMinTags(getTweetsByHashTag(tag, 100, geoCode), min);
             tweets.addAll(tweetsForTag);
         }
 
@@ -110,45 +105,4 @@ public class TwitterService {
         return tweets;
     }
 
-    public Set<TwitterProfile> getTwitterProfileByTweets(List<Tweet> tweets){
-        return tweets.stream().map(tweet -> tweet.getUser()).collect(Collectors.toSet());
-    }
-
-    public List<Long> getTwitterFriendsIdByTwitterProfile(TwitterProfile user){
-        List<Long> friendsId = new ArrayList<Long>();
-        try{
-            friendsId = twitter.friendOperations().getFriendIds(user.getId());
-        } catch(RateLimitExceededException e){
-
-        }
-        return friendsId;
-    }
-
-    public FriendshipDTO getFriendshipBeetwen(TwitterProfile i, TwitterProfile j){
-        String url = "https://api.twitter.com/1.1/friendships/show.json?source_id=" + i.getId() + "&target_id=" + j.getId();
-        try {
-            URI uri = new URI(url);
-            FriendshipDTO friendshipDTO =  twitter.restOperations().getForObject(uri, FriendshipDTO.class);
-            return friendshipDTO;
-        } catch(URISyntaxException uriException){
-            return null;
-        }
-    }
-
-    public Boolean hasConnection(FriendshipDTO friendshipDTO){
-        if(friendshipDTO == null){
-            return false;
-        }
-
-        RelationshipDTO relationshipDTO = friendshipDTO.getRelationship();
-        if(relationshipDTO.getSource().isFollowed_by() || relationshipDTO.getSource().isFollowing()){
-            return true;
-        }
-
-        if(relationshipDTO.getTarget().isFollowing() || relationshipDTO.getTarget().isFollowed_by()){
-            return true;
-        }
-
-        return false;
-    }
 }

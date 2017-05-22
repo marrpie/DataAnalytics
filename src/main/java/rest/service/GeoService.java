@@ -11,11 +11,11 @@ public class GeoService {
 
     public GeoCode getGeoCodeByCountry(String country){
         switch(country){
-            case "wlkb":
+            case "gb":
                 return getGeoCodeForWlkb();
             case "usa":
                 return getGeoCodeForUSA();
-            case "rpa":
+            case "sa":
                 return getGeoCodeForRPA();
             case "canada":
                 return getGeoCodeForCanada();
